@@ -1,10 +1,10 @@
-from tkinter import Label, Entry, Tk, Listbox, Button, messagebox, BOTH, filedialog as fd
 import os
 import glob
 from io import BytesIO
+from PIL import Image, ImageTk
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TIT2, TPE1
-from PIL import Image, ImageTk
+from tkinter import Label, Entry, Tk, Listbox, Button, messagebox, BOTH, filedialog as fd
 
 
 def get_mp3_files():
@@ -30,7 +30,7 @@ def modify_window(audio):
 
     modify = Tk()
     modify.title('Modify metadata')
-    modify.geometry('300x500')
+    modify.geometry('300x450')
 
     # Title
     title_label = Label(modify, text='Title:')
@@ -73,6 +73,7 @@ def modify_window(audio):
     image_entry = Entry(modify)
     image_entry.pack()
 
+
     def select_file():
         image_name = fd.askopenfilename(
             title='Pick an image',
@@ -89,9 +90,11 @@ def modify_window(audio):
         image_image.image = new_img
 
         image_entry.insert(0, image_name)
+        
 
     image_button = Button(modify, text='Select image', command=select_file)
     image_button.pack()
+
 
     # Update button
     def update():
@@ -115,6 +118,7 @@ def modify_window(audio):
 
         modify.destroy()
         messagebox.showinfo('Success', 'Tags have been updated')
+
 
     update_button = Button(modify, text='Update tags', command=update)
     update_button.pack()
