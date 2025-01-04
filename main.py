@@ -4,7 +4,7 @@ from io import BytesIO
 from PIL import Image, ImageTk
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TIT2, TPE1
-from tkinter import Label, Entry, Tk, Listbox, Button, messagebox, BOTH, filedialog as fd
+from tkinter import Label, Entry, Tk, Frame, Listbox, Button, messagebox, Scrollbar, filedialog as fd
 
 
 def get_mp3_files():
@@ -16,9 +16,9 @@ def get_mp3_files():
     return files
 
 
-def handle_select(e):
-    cs = Lb.curselection()
-    filename = Lb.get(cs)
+def handle_select(e=None):
+    cs = list_box.curselection()
+    filename = list_box.get(cs)
 
     audio = MP3(filename, ID3=ID3)
 
@@ -30,30 +30,39 @@ def modify_window(audio):
 
     modify = Tk()
     modify.title('Modify metadata')
-    modify.geometry('300x450')
+    modify.geometry('300x430')
+    modify.resizable(False, False)
+
+    icon = ImageTk.PhotoImage(file='../assets/icon.png', master=modify)
+    modify.iconphoto(False, icon)
 
     # Title
     title_label = Label(modify, text='Title:')
     title_label.pack()
-    title_entry = Entry(modify)
+    title_entry_frame = Frame(modify, padx=25)
+    title_entry_frame.pack(fill='x', expand=True)
+    title_entry = Entry(title_entry_frame, background='lightgrey')
+
     try:
         title_entry.insert(0, tags.get('TIT2'))
     except:
         pass
 
-    title_entry.pack()
+    title_entry.pack(fill='x', expand=True)
 
     # Artist
     artist_label = Label(modify, text='Artist:')
     artist_label.pack()
-    artist_entry = Entry(modify)
+    artist_entry_frame = Frame(modify, padx=25)
+    artist_entry_frame.pack(fill='x', expand=True)
+    artist_entry = Entry(artist_entry_frame, background='lightgrey')
 
     try:
         artist_entry.insert(0, tags.get('TPE1'))
     except:
         pass
 
-    artist_entry.pack()
+    artist_entry.pack(fill='x', expand=True)
 
     # Image
     image_label = Label(modify, text='Image:')
@@ -63,7 +72,7 @@ def modify_window(audio):
         img = Image.open(BytesIO(tags.get('APIC:').data))
         img = img.resize((250, 250), Image.LANCZOS)
     except:
-        img = Image.open('../img/no_image.png')
+        img = Image.open('../assets/no_image.png')
         img = img.resize((250, 250), Image.LANCZOS)
 
     img = ImageTk.PhotoImage(img, master=modify)
@@ -71,15 +80,13 @@ def modify_window(audio):
     image_image.pack()
 
     image_entry = Entry(modify)
-    image_entry.pack()
-
 
     def select_file():
         image_name = fd.askopenfilename(
             title='Pick an image',
             initialdir='/img',
-            filetypes=[(("PNG", "*.png"))])
-        
+            filetypes=[(('PNG', '*.png'))])
+
         if not image_name:
             return
 
@@ -90,13 +97,16 @@ def modify_window(audio):
         image_image.image = new_img
 
         image_entry.insert(0, image_name)
-        
 
-    image_button = Button(modify, text='Select image', command=select_file)
+    image_button_frame = Frame(modify)
+    image_button_frame.pack(pady=5)
+
+    image_button = Button(image_button_frame,
+                          text='Select image...', command=select_file, background='lightgray')
     image_button.pack()
 
-
     # Update button
+
     def update():
         title = title_entry.get()
         artist = artist_entry.get()
@@ -119,8 +129,11 @@ def modify_window(audio):
         modify.destroy()
         messagebox.showinfo('Success', 'Tags have been updated')
 
+    update_button_frame = Frame(modify)
+    update_button_frame.pack(pady=5)
 
-    update_button = Button(modify, text='Update tags', command=update)
+    update_button = Button(update_button_frame, text='Update tags', command=update, font=(
+        'Arial', 10, 'bold'), background='lightgray')
     update_button.pack()
 
     modify.mainloop()
@@ -131,12 +144,30 @@ if __name__ == '__main__':
     root.title('MP3 Tag Editor')
     root.geometry('300x300')
 
-    Lb = Listbox(root)
+    icon = ImageTk.PhotoImage(file='./assets/icon.png')
+    root.iconphoto(False, icon)
+
+    select_button_frame = Frame(root)
+    select_button_frame.pack(pady=5)
+
+    select_button = Button(select_button_frame,
+                           text='Select file', command=handle_select)
+    select_button.pack()
+
+    scroll_frame = Frame(root)
+    scroll_frame.pack(fill='both', expand=True)
+
+    list_box = Listbox(scroll_frame, cursor='hand2')
+    list_box.pack(side='left', fill='both', expand=True)
     for i, file in enumerate(get_mp3_files()):
-        Lb.insert(i, file)
+        list_box.insert(i, file)
 
-    Lb.bind('<Double-1>', handle_select)
+    list_box.bind('<Double-1>', handle_select)
 
-    Lb.pack(fill=BOTH, expand=1)
+    scrollbar = Scrollbar(scroll_frame, orient='vertical')
+    scrollbar.config(command=list_box.yview)
+    scrollbar.pack(side='right', fill='y')
+
+    list_box.config(yscrollcommand=scrollbar.set)
 
     root.mainloop()
