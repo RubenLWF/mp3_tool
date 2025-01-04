@@ -1,8 +1,8 @@
 # mp3_tool
 
-I like listening to songs from SoundCloud, but I do not like paying for SoundCloud since I already pay for Spotify. I solve this problem by downloading the songs from SoundCloud and importing the `.mp3` files into Spotify as local files.
+I like listening to songs from SoundCloud, but I do not like paying for SoundCloud since I already pay for Spotify. I solve this by downloading the songs from SoundCloud and importing the `.mp3` files into Spotify as local files.
 
-This would cause the songs to show up on Spotify like this:
+This causes the songs to show up in Spotify like this:
 
 ![Boring Spotify local files](assets/before.png)
 
@@ -10,7 +10,7 @@ This would cause the songs to show up on Spotify like this:
 
 Personally, I think this is boring since I like looking at the album art of the songs I'm listening to.
 
-I started looking for a tool to edit the album art and other data of .mp3 files and all I was able to find were complicated tools that are way more complicated than I need them to be. That is why I decided to make my own simple tool.
+I started looking for a tool to edit the album art and other data of `.mp3` files and all I was able to find were complicated tools that are way more complicated than I need them to be. That is why I decided to make my own (simpler) tool.
 
 ---
 
