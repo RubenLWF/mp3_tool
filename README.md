@@ -41,7 +41,11 @@ Editing the files results in them looking like this in Spotify:
 ![alt text](assets/after.png)
 
 ---
-### Dependencies:
+### Requirements:
 - [Pillow](https://pypi.org/project/pillow/)
-- [tkinter](https://docs.python.org/3/library/tkinter.html)
 - [mutagen](https://pypi.org/project/mutagen/)
+
+Install these requirements by running:
+```
+pip install -r requirements.txt
+```
